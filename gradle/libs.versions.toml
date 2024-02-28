@@ -1,0 +1,75 @@
+[versions]
+androidGradlePlugin = "8.2.1"
+kotlin = "1.9.0"
+minSdk = "24"
+targetSdk = "34"
+compileSdk = "34"
+
+ktx = "1.12.0"
+activityCompose = "1.8.2"
+composeBOM = "2024.02.00"
+compose = "1.5.1"
+composeNav = "2.7.7"
+hilt = "2.50"
+kotlinxSerializationJson = "1.5.0"
+retrofit = "2.9.0"
+retrofit-converter = "1.0.0"
+okhttpBOM = "4.12.0"
+room = "2.6.1"
+junit = "4.13.2"
+androidx-junit = "1.1.5"
+espressoCore = "3.5.1"
+paging = "3.2.1"
+
+[libraries]
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBOM" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+compose-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-material = { group = "androidx.compose.material3", name = "material3" }
+compose-runtime = { group = "androidx.compose.runtime", name = "runtime-livedata" }
+compose-nav = { group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNav" }
+compose-paging = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
+paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-converter = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofit-converter" }
+okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttpBOM" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
+okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
+junit = { module = "junit:junit", version.ref = "junit" }
+androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
+androidx-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-junit" }
+compose-test-junit = { module = "androidx.compose.ui:ui-test-junit4" }
+compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
+[bundles]
+compose = [
+    "compose-ui",
+    "compose-graphics",
+    "compose-tooling",
+    "compose-material",
+    "compose-nav",
+    "compose-paging",
+    "compose-runtime"
+]
+room = [
+    "room-ktx",
+    "room-runtime",
+    "room-paging"
+]
