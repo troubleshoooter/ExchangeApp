@@ -8,6 +8,9 @@ import com.pay2.exhangeapp.data.source.local.entity.Currency
 import com.pay2.exhangeapp.data.source.local.entity.ExchangeRates
 import com.pay2.exhangeapp.data.source.local.entity.RefreshSchedules
 import com.pay2.exhangeapp.data.source.remote.RemoteCurrencyDataSource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -19,30 +22,35 @@ class CurrencyRepositoryImpl @Inject constructor(
     private val networkUtil: NetworkUtil
 ) : CurrencyRepository {
 
-    override suspend fun getCurrencies(): List<Currency> {
-        return if (shouldFetchFromRemote(NetworkConst.EndPoints.CURRENCIES) && networkUtil.isConnectedToInternet()) {
+    override fun getCurrencies(): Flow<Result<List<Currency>>> = flow {
+        if (shouldFetchFromRemote(NetworkConst.EndPoints.CURRENCIES) && networkUtil.isConnectedToInternet()) {
             val currencies = remoteCurrencySource.getCurrencies()
             localCurrencySource.saveCurrencies(currencies)
             updateRefreshSchedule(NetworkConst.EndPoints.CURRENCIES)
-            currencies
+            emit(Result.success(currencies))
         } else {
-            localCurrencySource.getCurrencies()
+            emit(Result.success(localCurrencySource.getCurrencies()))
         }
+    }.catch {
+        emit(Result.failure(it))
     }
 
-    override suspend fun getExchangeRates(sourceCurrency: String): List<ExchangeRates> {
-        return if (shouldFetchFromRemote(NetworkConst.EndPoints.EXCHANGE_RATES)
-            && networkUtil.isConnectedToInternet()
-        ) {
-            val exchangeRates = remoteCurrencySource.getExchangeRates(sourceCurrency)
-            localCurrencySource.saveExchangeRates(exchangeRates)
-            // future proofing for other currencies
-            updateRefreshSchedule(NetworkConst.EndPoints.EXCHANGE_RATES + "/$sourceCurrency")
-            exchangeRates
-        } else {
-            localCurrencySource.getExchangeRates()
+    override fun getExchangeRates(sourceCurrency: String): Flow<Result<List<ExchangeRates>>> =
+        flow {
+            if (shouldFetchFromRemote(NetworkConst.EndPoints.EXCHANGE_RATES)
+                && networkUtil.isConnectedToInternet()
+            ) {
+                val exchangeRates = remoteCurrencySource.getExchangeRates(sourceCurrency)
+                localCurrencySource.saveExchangeRates(exchangeRates)
+                // future proofing for other currencies
+                updateRefreshSchedule(NetworkConst.EndPoints.EXCHANGE_RATES + "/$sourceCurrency")
+                emit(Result.success(exchangeRates))
+            } else {
+                emit(Result.success(localCurrencySource.getExchangeRates()))
+            }
+        }.catch {
+            emit(Result.failure(it))
         }
-    }
 
     private suspend fun updateRefreshSchedule(resource: String) {
         refreshSchedulesDao.upsert(

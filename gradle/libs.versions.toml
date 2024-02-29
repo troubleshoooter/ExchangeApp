@@ -7,7 +7,7 @@ compileSdk = "34"
 
 ktx = "1.12.0"
 activityCompose = "1.8.2"
-composeBOM = "2024.02.00"
+composeBOM = "2024.02.01"
 compose = "1.5.1"
 composeNav = "2.7.7"
 hilt = "2.50"
@@ -20,6 +20,7 @@ junit = "4.13.2"
 androidx-junit = "1.1.5"
 espressoCore = "3.5.1"
 paging = "3.2.1"
+lifecycleRuntimeCompose = "2.7.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -32,6 +33,7 @@ compose-material = { group = "androidx.compose.material3", name = "material3" }
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime-livedata" }
 compose-nav = { group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNav" }
 compose-paging = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
+lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
@@ -66,7 +68,8 @@ compose = [
     "compose-material",
     "compose-nav",
     "compose-paging",
-    "compose-runtime"
+    "compose-runtime",
+    "lifecycle-runtime-compose"
 ]
 room = [
     "room-ktx",
