@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.kapt)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.kotlinx.parcelize)
 }
 val secretProperties = Properties()
 secretProperties.load(FileInputStream(rootProject.file("secrets.properties")))

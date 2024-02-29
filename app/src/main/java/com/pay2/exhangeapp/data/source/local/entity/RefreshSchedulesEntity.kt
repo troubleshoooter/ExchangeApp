@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity("refresh_schedules")
-data class RefreshSchedules(
+data class RefreshSchedulesEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val resource: String,

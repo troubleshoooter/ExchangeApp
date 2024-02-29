@@ -5,12 +5,12 @@ import androidx.room.RoomDatabase
 import com.pay2.exhangeapp.data.source.local.dao.CurrencyDao
 import com.pay2.exhangeapp.data.source.local.dao.ExchangeRatesDao
 import com.pay2.exhangeapp.data.source.local.dao.RefreshSchedulesDao
-import com.pay2.exhangeapp.data.source.local.entity.Currency
-import com.pay2.exhangeapp.data.source.local.entity.ExchangeRates
-import com.pay2.exhangeapp.data.source.local.entity.RefreshSchedules
+import com.pay2.exhangeapp.data.source.local.entity.CurrencyEntity
+import com.pay2.exhangeapp.data.source.local.entity.ExchangeRatesEntity
+import com.pay2.exhangeapp.data.source.local.entity.RefreshSchedulesEntity
 
 @Database(
-    entities = [Currency::class, ExchangeRates::class, RefreshSchedules::class],
+    entities = [CurrencyEntity::class, ExchangeRatesEntity::class, RefreshSchedulesEntity::class],
     version = 1,
     exportSchema = false
 )

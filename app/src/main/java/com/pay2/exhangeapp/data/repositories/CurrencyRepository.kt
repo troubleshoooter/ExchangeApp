@@ -1,7 +1,7 @@
 package com.pay2.exhangeapp.data.repositories
 
-import com.pay2.exhangeapp.data.source.local.entity.Currency
-import com.pay2.exhangeapp.data.source.local.entity.ExchangeRates
+import com.pay2.exhangeapp.data.models.Currency
+import com.pay2.exhangeapp.data.models.ExchangeRates
 import kotlinx.coroutines.flow.Flow
 
 interface CurrencyRepository {

@@ -18,12 +18,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
-import com.pay2.exhangeapp.data.source.local.entity.Currency
+import com.pay2.exhangeapp.data.models.Currency
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,20 +32,21 @@ fun CurrencyDropDown(
     currencyItems: List<Currency>,
     onCurrencySelected: (currency: Currency?) -> Unit
 ) {
-    var mExpanded by remember { mutableStateOf(false) }
-    var currencyValue by remember {
+    var mExpanded by rememberSaveable { mutableStateOf(false) }
+    var currencyValue by rememberSaveable {
         mutableStateOf("")
     }
-    var selectedCurrencyValue by remember {
+    var selectedCurrencyValue by rememberSaveable {
         mutableStateOf("")
     }
     ExposedDropdownMenuBox(
         expanded = mExpanded,
         onExpandedChange = { mExpanded = !mExpanded },
-        modifier = Modifier.padding(12.dp)
+        modifier = Modifier.padding(12.dp),
     ) {
         OutlinedTextField(
-            value = currencyValue, onValueChange = {
+            value = currencyValue,
+            onValueChange = {
                 currencyValue = it
             },
             maxLines = 1,

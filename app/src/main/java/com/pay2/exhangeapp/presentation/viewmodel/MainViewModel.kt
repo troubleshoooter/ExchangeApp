@@ -1,10 +1,11 @@
 package com.pay2.exhangeapp.presentation.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pay2.exhangeapp.data.models.Currency
+import com.pay2.exhangeapp.data.models.ExchangeRates
 import com.pay2.exhangeapp.data.repositories.CurrencyRepository
-import com.pay2.exhangeapp.data.source.local.entity.Currency
-import com.pay2.exhangeapp.data.source.local.entity.ExchangeRates
 import com.pay2.exhangeapp.presentation.ui.home.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -20,17 +21,21 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val currencyRepository: CurrencyRepository
+    private val currencyRepository: CurrencyRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private var originalExchangeRates: List<ExchangeRates> = listOf()
-    private var selectedCurrency: Currency? = null
+    private var selectedCurrency: Currency? = savedStateHandle[SELECTED_CURRENCY_KEY]
+    private var amount: Double? = savedStateHandle[ENTERED_AMOUNT_KEY]
     private var conversionJob: Job? = null
-    private val homeUiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
-
+    private val homeUiState: MutableStateFlow<HomeUiState> =
+        MutableStateFlow(HomeUiState())
 
     companion object {
         private const val DEBOUNCE = 500L
+        private const val SELECTED_CURRENCY_KEY = "selected_currency"
+        private const val ENTERED_AMOUNT_KEY = "entered_amount"
     }
 
     private fun fetchCurrencies() {
@@ -60,12 +65,16 @@ class MainViewModel @Inject constructor(
     }
 
     fun setSelectedCurrency(currency: Currency?) {
+        savedStateHandle[SELECTED_CURRENCY_KEY] = currency
         selectedCurrency = currency
     }
 
     fun getHomeUiState(): StateFlow<HomeUiState> {
         if (homeUiState.value.currencies.isEmpty()) {
             fetchCurrencies()
+        }
+        if (savedStateHandle.get<Double>(ENTERED_AMOUNT_KEY) != null) {
+            getConversions(savedStateHandle[ENTERED_AMOUNT_KEY] ?: 1.0)
         }
         return homeUiState
     }
@@ -78,6 +87,7 @@ class MainViewModel @Inject constructor(
         selectedCurrency?.code?.let { code ->
             conversionJob = viewModelScope.launch(Dispatchers.IO) {
                 delay(DEBOUNCE)
+                savedStateHandle[ENTERED_AMOUNT_KEY] = amount
                 if (homeUiState.value.exchangeRates.isEmpty()) {
                     currencyRepository.getExchangeRates(code).collectLatest {
                         if (it.isSuccess) {

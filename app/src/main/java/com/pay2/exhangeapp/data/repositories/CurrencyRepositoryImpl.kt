@@ -2,11 +2,12 @@ package com.pay2.exhangeapp.data.repositories
 
 import com.pay2.exhangeapp.common.NetworkConst
 import com.pay2.exhangeapp.common.NetworkUtil
+import com.pay2.exhangeapp.data.models.Currency
+import com.pay2.exhangeapp.data.models.ExchangeRates
 import com.pay2.exhangeapp.data.source.local.LocalCurrencyDataSource
 import com.pay2.exhangeapp.data.source.local.dao.RefreshSchedulesDao
-import com.pay2.exhangeapp.data.source.local.entity.Currency
-import com.pay2.exhangeapp.data.source.local.entity.ExchangeRates
-import com.pay2.exhangeapp.data.source.local.entity.RefreshSchedules
+import com.pay2.exhangeapp.data.source.local.entity.RefreshSchedulesEntity
+import com.pay2.exhangeapp.data.source.local.entity.toExternalModel
 import com.pay2.exhangeapp.data.source.remote.RemoteCurrencyDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -27,9 +28,9 @@ class CurrencyRepositoryImpl @Inject constructor(
             val currencies = remoteCurrencySource.getCurrencies()
             localCurrencySource.saveCurrencies(currencies)
             updateRefreshSchedule(NetworkConst.EndPoints.CURRENCIES)
-            emit(Result.success(currencies))
+            emit(Result.success(currencies.map { it.toExternalModel() }))
         } else {
-            emit(Result.success(localCurrencySource.getCurrencies()))
+            emit(Result.success(localCurrencySource.getCurrencies().map { it.toExternalModel() }))
         }
     }.catch {
         emit(Result.failure(it))
@@ -44,9 +45,12 @@ class CurrencyRepositoryImpl @Inject constructor(
                 localCurrencySource.saveExchangeRates(exchangeRates)
                 // future proofing for other currencies
                 updateRefreshSchedule(NetworkConst.EndPoints.EXCHANGE_RATES + "/$sourceCurrency")
-                emit(Result.success(exchangeRates))
+                emit(Result.success(exchangeRates.map { it.toExternalModel() }))
             } else {
-                emit(Result.success(localCurrencySource.getExchangeRates()))
+                emit(
+                    Result.success(
+                        localCurrencySource.getExchangeRates().map { it.toExternalModel() })
+                )
             }
         }.catch {
             emit(Result.failure(it))
@@ -54,7 +58,7 @@ class CurrencyRepositoryImpl @Inject constructor(
 
     private suspend fun updateRefreshSchedule(resource: String) {
         refreshSchedulesDao.upsert(
-            RefreshSchedules(
+            RefreshSchedulesEntity(
                 resource = resource,
                 timestamp = System.currentTimeMillis()
             )
@@ -66,6 +70,4 @@ class CurrencyRepositoryImpl @Inject constructor(
             ?: 0) >
                 TimeUnit.MINUTES.toMillis(NetworkConst.REFRESH_TIMEOUT)
     }
-
-
 }
