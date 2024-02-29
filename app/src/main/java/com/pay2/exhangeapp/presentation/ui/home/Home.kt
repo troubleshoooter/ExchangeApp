@@ -1,6 +1,8 @@
 package com.pay2.exhangeapp.presentation.ui.home
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -44,20 +46,26 @@ fun Home(mainViewModel: MainViewModel = viewModel()) {
         mutableStateOf("")
     }
 
-    val homeUiState by mainViewModel.getHomeUiState().collectAsStateWithLifecycle()
+    val currencyState by mainViewModel.getCurrencies().collectAsStateWithLifecycle()
+    val exchangeRatesState by mainViewModel.getExchangeRates().collectAsStateWithLifecycle()
+    val errorState by mainViewModel.getError().collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        mainViewModel.fetchData()
+    }
 
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackBarHostState)
         }
     ) { paddingValues ->
-        if (!homeUiState.errorMessage.isNullOrEmpty()) {
+        if (!errorState.isNullOrEmpty()) {
             LaunchedEffect(key1 = snackBarHostState) {
                 scope.launch {
                     snackBarHostState.showSnackbar(
-                        message = homeUiState.errorMessage.toString()
+                        message = errorState.toString()
                     )
                 }
             }
@@ -77,29 +85,33 @@ fun Home(mainViewModel: MainViewModel = viewModel()) {
                     .padding(12.dp)
             )
             CurrencyDropDown(
-                homeUiState.isLoading && homeUiState.currencies.isEmpty(),
-                currencyItems = homeUiState.currencies,
+                isLoading = currencyState == null,
+                currencyItems = currencyState,
                 onCurrencySelected = { currency ->
-                    mainViewModel.setSelectedCurrency(currency)
                     currency?.let {
-                        if (amountValue.isNotBlank()) {
-                            mainViewModel.getConversions(amountValue.toDouble())
-                        } else {
+                        val prevCurrency = mainViewModel.getSelectedCurrency()
+                        mainViewModel.setSelectedCurrency(currency)
+                        if (amountValue.isBlank()) {
                             mainViewModel.clearList()
+                        } else if (amountValue.isNotBlank() && prevCurrency != currency) {
+                            mainViewModel.getConversions(amountValue.toDouble())
                         }
+
+
                     } ?: mainViewModel.clearList()
                 }
             )
             LazyVerticalStaggeredGrid(
                 columns = StaggeredGridCells.Fixed(GRID_SPAN),
             ) {
-                if (homeUiState.isLoading
-                    && homeUiState.currencies.isNotEmpty()
-                    && homeUiState.exchangeRates.isEmpty()
-                ) {
-                    item { LinearProgressIndicator() }
+                if (exchangeRatesState?.isEmpty() == true) {
+                    item {
+                        Row(horizontalArrangement = Arrangement.Center) {
+                            LinearProgressIndicator()
+                        }
+                    }
                 } else {
-                    items(homeUiState.exchangeRates) {
+                    items(exchangeRatesState.orEmpty(), key = { it.code }) {
                         ElevatedCard(
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.surfaceVariant,

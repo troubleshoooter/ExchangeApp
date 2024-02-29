@@ -6,8 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.pay2.exhangeapp.data.models.Currency
 import com.pay2.exhangeapp.data.models.ExchangeRates
 import com.pay2.exhangeapp.data.repositories.CurrencyRepository
-import com.pay2.exhangeapp.presentation.ui.home.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -26,11 +28,12 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var originalExchangeRates: List<ExchangeRates> = listOf()
+    private var currencies: MutableStateFlow<ImmutableList<Currency>?> = MutableStateFlow(null)
+    private var exchangeRates: MutableStateFlow<List<ExchangeRates>?> = MutableStateFlow(null)
+    private var error: MutableStateFlow<String?> = MutableStateFlow(null)
     private var selectedCurrency: Currency? = savedStateHandle[SELECTED_CURRENCY_KEY]
     private var amount: Double? = savedStateHandle[ENTERED_AMOUNT_KEY]
     private var conversionJob: Job? = null
-    private val homeUiState: MutableStateFlow<HomeUiState> =
-        MutableStateFlow(HomeUiState())
 
     companion object {
         private const val DEBOUNCE = 500L
@@ -40,20 +43,14 @@ class MainViewModel @Inject constructor(
 
     private fun fetchCurrencies() {
         viewModelScope.launch(Dispatchers.IO) {
-            currencyRepository.getCurrencies().collectLatest { currencyList ->
-                if (currencyList.isSuccess) {
-                    homeUiState.update {
-                        it.copy(
-                            isLoading = false,
-                            currencies = currencyList.getOrDefault(emptyList())
-                        )
+            currencyRepository.getCurrencies().collectLatest { result ->
+                if (result.isSuccess) {
+                    currencies.update {
+                        result.getOrNull()?.toPersistentList() ?: persistentListOf()
                     }
                 } else {
-                    homeUiState.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMessage = currencyList.exceptionOrNull()?.message
-                        )
+                    error.update {
+                        result.exceptionOrNull()?.message
                     }
                 }
             }
@@ -64,53 +61,55 @@ class MainViewModel @Inject constructor(
         return selectedCurrency
     }
 
-    fun setSelectedCurrency(currency: Currency?) {
-        savedStateHandle[SELECTED_CURRENCY_KEY] = currency
-        selectedCurrency = currency
-    }
-
-    fun getHomeUiState(): StateFlow<HomeUiState> {
-        if (homeUiState.value.currencies.isEmpty()) {
+    fun fetchData() {
+        if (currencies.value.isNullOrEmpty()) {
             fetchCurrencies()
         }
         if (savedStateHandle.get<Double>(ENTERED_AMOUNT_KEY) != null) {
             getConversions(savedStateHandle[ENTERED_AMOUNT_KEY] ?: 1.0)
         }
-        return homeUiState
+    }
+
+    fun getCurrencies(): StateFlow<ImmutableList<Currency>?> {
+        return currencies
+    }
+
+    fun getExchangeRates(): StateFlow<List<ExchangeRates>?> {
+        return exchangeRates
+    }
+
+    fun getError(): StateFlow<String?> {
+        return error
+    }
+
+    fun setSelectedCurrency(currency: Currency?) {
+        savedStateHandle[SELECTED_CURRENCY_KEY] = currency
+        selectedCurrency = currency
     }
 
     fun getConversions(amount: Double) {
-        homeUiState.update {
-            it.copy(isLoading = true)
-        }
         conversionJob?.cancel()
         selectedCurrency?.code?.let { code ->
             conversionJob = viewModelScope.launch(Dispatchers.IO) {
                 delay(DEBOUNCE)
                 savedStateHandle[ENTERED_AMOUNT_KEY] = amount
-                if (homeUiState.value.exchangeRates.isEmpty()) {
-                    currencyRepository.getExchangeRates(code).collectLatest {
-                        if (it.isSuccess) {
-                            originalExchangeRates = it.getOrDefault(emptyList())
+                if (originalExchangeRates.isEmpty()) {
+                    currencyRepository.getExchangeRates(code).collectLatest { result ->
+                        if (result.isSuccess) {
+                            originalExchangeRates = result.getOrDefault(emptyList())
                         } else {
-                            homeUiState.update { uiState ->
-                                uiState.copy(
-                                    isLoading = false,
-                                    errorMessage = it.exceptionOrNull()?.message
-                                )
+                            error.update {
+                                result.exceptionOrNull()?.message
                             }
                         }
                     }
                 }
                 withContext(Dispatchers.Default) {
-                    homeUiState.update { uiState ->
-                        uiState.copy(
-                            isLoading = false,
-                            exchangeRates = transformListWithCalculatedRates(
-                                amount,
-                                code,
-                                originalExchangeRates
-                            )
+                    exchangeRates.update {
+                        transformListWithCalculatedRates(
+                            amount,
+                            code,
+                            originalExchangeRates
                         )
                     }
                 }
@@ -143,8 +142,8 @@ class MainViewModel @Inject constructor(
 
     fun clearList() {
         conversionJob?.cancel()
-        homeUiState.update {
-            it.copy(exchangeRates = emptyList())
+        exchangeRates.update {
+            null
         }
     }
 }

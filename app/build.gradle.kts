@@ -51,8 +51,13 @@ android {
             )
             buildConfigField(
                 "String",
+                "BASE_URL",
+                "\"${secretProperties["BASE_URL"]}\""
+            )
+            buildConfigField(
+                "String",
                 "OPEN_EXCHANGE_APP_ID",
-                "\"secretProperties[\"OPEN_EXCHANGE_APP_ID\"]\""
+                "\"${secretProperties["OPEN_EXCHANGE_APP_ID"]}\""
             )
         }
     }
@@ -94,9 +99,10 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.collection)
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp)
-    debugImplementation(libs.okhttp.logging)
+    implementation(libs.okhttp.logging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -21,10 +21,12 @@ androidx-junit = "1.1.5"
 espressoCore = "3.5.1"
 paging = "3.2.1"
 lifecycleRuntimeCompose = "2.7.0"
+kotlinxCollection = "0.3.7"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
+kotlinx-collection = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxCollection" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBOM" }
 compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }

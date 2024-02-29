@@ -24,12 +24,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import com.pay2.exhangeapp.data.models.Currency
+import kotlinx.collections.immutable.ImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CurrencyDropDown(
     isLoading: Boolean,
-    currencyItems: List<Currency>,
+    currencyItems: ImmutableList<Currency>?,
     onCurrencySelected: (currency: Currency?) -> Unit
 ) {
     var mExpanded by rememberSaveable { mutableStateOf(false) }
@@ -82,7 +83,7 @@ fun CurrencyDropDown(
                 .menuAnchor()
                 .fillMaxWidth()
         )
-        val filteringOptions = currencyItems.filter {
+        val filteringOptions = currencyItems?.filter {
             it.toString().contains(currencyValue, ignoreCase = true)
         }
         ExposedDropdownMenu(
@@ -92,7 +93,7 @@ fun CurrencyDropDown(
                 .heightIn(0.dp, 240.dp)
                 .fillMaxWidth()
         ) {
-            filteringOptions.map { currency ->
+            filteringOptions?.map { currency ->
                 DropdownMenuItem(
                     text = { Text(currency.toString()) },
                     onClick = {
