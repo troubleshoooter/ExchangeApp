@@ -1,8 +1,6 @@
 package com.pay2.exhangeapp.presentation.ui.home
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -10,7 +8,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -104,13 +101,7 @@ fun Home(mainViewModel: MainViewModel = viewModel()) {
             LazyVerticalStaggeredGrid(
                 columns = StaggeredGridCells.Fixed(GRID_SPAN),
             ) {
-                if (exchangeRatesState?.isEmpty() == true) {
-                    item {
-                        Row(horizontalArrangement = Arrangement.Center) {
-                            LinearProgressIndicator()
-                        }
-                    }
-                } else {
+                if (!exchangeRatesState.isNullOrEmpty()) {
                     items(exchangeRatesState.orEmpty(), key = { it.code }) {
                         ElevatedCard(
                             colors = CardDefaults.cardColors(
