@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 
 @Composable
@@ -32,6 +33,6 @@ fun AmountTextField(onValueChange: (String) -> Unit, modifier: Modifier) {
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
         ),
-        modifier = modifier
+        modifier = modifier.then(Modifier.testTag("AmountTextField"))
     )
 }
