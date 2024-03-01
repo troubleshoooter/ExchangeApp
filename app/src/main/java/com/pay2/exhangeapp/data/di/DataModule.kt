@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.pay2.exhangeapp.BuildConfig
+import com.pay2.exhangeapp.common.CoroutineDispatchers
+import com.pay2.exhangeapp.common.CoroutineDispatchersProvider
 import com.pay2.exhangeapp.common.NetworkConst
 import com.pay2.exhangeapp.common.NetworkUtil
 import com.pay2.exhangeapp.data.source.remote.api.ApiService
@@ -62,6 +64,12 @@ object DataModule {
     @Singleton
     fun provideNetworkUtil(connectivityManager: ConnectivityManager): NetworkUtil {
         return NetworkUtil(connectivityManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCoroutineDispatchers(): CoroutineDispatchers {
+        return CoroutineDispatchersProvider
     }
 
     private val json = Json {

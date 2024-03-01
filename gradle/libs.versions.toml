@@ -22,6 +22,10 @@ espressoCore = "3.5.1"
 paging = "3.2.1"
 lifecycleRuntimeCompose = "2.7.0"
 kotlinxCollection = "0.3.7"
+mockk = '1.13.10'
+coroutinesTest = '1.8.0'
+androidCoreTest = '2.2.0'
+kover = "0.7.6"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -52,8 +56,11 @@ room-paging = { group = "androidx.room", name = "room-paging", version.ref = "ro
 junit = { module = "junit:junit", version.ref = "junit" }
 androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
 androidx-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-junit" }
-compose-test-junit = { module = "androidx.compose.ui:ui-test-junit4" }
-compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+compose-test-junit = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+compose-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+mockk = { group = "io.mockk", name="mockk", version.ref = "mockk" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name="kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+androidx-test = { group = "androidx.arch.core", name="core-testing", version.ref = "androidCoreTest" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -62,6 +69,7 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlinx-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 
 [bundles]
 compose = [

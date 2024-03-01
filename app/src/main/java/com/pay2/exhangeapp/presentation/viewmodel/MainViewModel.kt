@@ -3,14 +3,13 @@ package com.pay2.exhangeapp.presentation.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pay2.exhangeapp.common.CoroutineDispatchers
 import com.pay2.exhangeapp.data.models.Currency
 import com.pay2.exhangeapp.data.models.ExchangeRates
 import com.pay2.exhangeapp.data.repositories.CurrencyRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val currencyRepository: CurrencyRepository,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
     private var originalExchangeRates: List<ExchangeRates> = listOf()
@@ -42,15 +42,15 @@ class MainViewModel @Inject constructor(
     }
 
     private fun fetchCurrencies() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.io) {
             currencyRepository.getCurrencies().collectLatest { result ->
-                if (result.isSuccess) {
+                try {
                     currencies.update {
-                        result.getOrNull()?.toPersistentList() ?: persistentListOf()
+                        result.getOrThrow().toPersistentList()
                     }
-                } else {
+                } catch (e: Throwable) {
                     error.update {
-                        result.exceptionOrNull()?.message
+                        e.message
                     }
                 }
             }
@@ -66,7 +66,7 @@ class MainViewModel @Inject constructor(
             fetchCurrencies()
         }
         if (savedStateHandle.get<Double>(ENTERED_AMOUNT_KEY) != null) {
-            getConversions(savedStateHandle[ENTERED_AMOUNT_KEY] ?: 1.0)
+            getConversions(savedStateHandle[ENTERED_AMOUNT_KEY]!!)
         }
     }
 
@@ -89,32 +89,34 @@ class MainViewModel @Inject constructor(
 
     fun getConversions(amount: Double) {
         conversionJob?.cancel()
-        selectedCurrency?.code?.let { code ->
-            conversionJob = viewModelScope.launch(Dispatchers.IO) {
+        if (selectedCurrency != null) {
+            conversionJob = viewModelScope.launch(dispatchers.io) {
                 delay(DEBOUNCE)
                 savedStateHandle[ENTERED_AMOUNT_KEY] = amount
                 if (originalExchangeRates.isEmpty()) {
-                    currencyRepository.getExchangeRates(code).collectLatest { result ->
-                        if (result.isSuccess) {
-                            originalExchangeRates = result.getOrDefault(emptyList())
-                        } else {
-                            error.update {
-                                result.exceptionOrNull()?.message
+                    currencyRepository.getExchangeRates(selectedCurrency!!.code)
+                        .collectLatest { result ->
+                            try {
+                                originalExchangeRates = result.getOrThrow()
+                            } catch (e: Throwable) {
+                                error.update {
+                                    e.message
+                                }
                             }
                         }
-                    }
                 }
-                withContext(Dispatchers.Default) {
+                withContext(dispatchers.default) {
                     exchangeRates.update {
                         transformListWithCalculatedRates(
                             amount,
-                            code,
+                            selectedCurrency!!.code,
                             originalExchangeRates
                         )
                     }
                 }
             }
         }
+
     }
 
     private fun transformListWithCalculatedRates(
@@ -124,7 +126,7 @@ class MainViewModel @Inject constructor(
     ): List<ExchangeRates> {
         // if the base is already USD we already have the data :)
         return if (base.equals("USD", ignoreCase = true)) {
-            return list.map { it.copy(code = it.code, rate = it.rate * amount) }
+            list.map { it.copy(code = it.code, rate = it.rate * amount) }
         } else {
             // calculating for other base currency using simple formula based on USD rates
             // i.e-> INR to GBP rate = amount / (USD to GBP rate) * (USD to INR rate)
@@ -133,8 +135,7 @@ class MainViewModel @Inject constructor(
             list.map {
                 it.copy(
                     code = it.code,
-                    rate = amount / usdToBaseRate * (list.findLast { c -> it.code == c.code }?.rate
-                        ?: 1.0)
+                    rate = amount / it.rate * usdToBaseRate
                 )
             }
         }

@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kapt)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.kotlinx.parcelize)
+    alias(libs.plugins.kotlinx.kover)
 }
 val secretProperties = Properties()
 secretProperties.load(FileInputStream(rootProject.file("secrets.properties")))
@@ -104,6 +105,9 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.androidx.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.compose.bom))
