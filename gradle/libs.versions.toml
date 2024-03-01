@@ -18,6 +18,8 @@ okhttpBOM = "4.12.0"
 room = "2.6.1"
 junit = "4.13.2"
 androidx-junit = "1.1.5"
+test-runner = "1.5.2"
+test-rules = "1.5.0"
 espressoCore = "3.5.1"
 paging = "3.2.1"
 lifecycleRuntimeCompose = "2.7.0"
@@ -26,6 +28,7 @@ mockk = '1.13.10'
 coroutinesTest = '1.8.0'
 androidCoreTest = '2.2.0'
 kover = "0.7.6"
+core-test = "1.5.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -55,12 +58,15 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
 junit = { module = "junit:junit", version.ref = "junit" }
 androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
-androidx-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-junit" }
+test-runner = { group = "androidx.test", name = "runner", version.ref = "test-runner" }
+test-rules = { group = "androidx.test", name = "rules", version.ref = "test-rules" }
 compose-test-junit = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 compose-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-mockk = { group = "io.mockk", name="mockk", version.ref = "mockk" }
-coroutines-test = { group = "org.jetbrains.kotlinx", name="kotlinx-coroutines-test", version.ref = "coroutinesTest" }
-androidx-test = { group = "androidx.arch.core", name="core-testing", version.ref = "androidCoreTest" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+androidx-test = { group = "androidx.arch.core", name = "core-testing", version.ref = "androidCoreTest" }
+core-test = { group = "androidx.test", name = "core-ktx", version.ref = "core-test" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
