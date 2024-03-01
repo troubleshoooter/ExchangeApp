@@ -22,6 +22,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.pay2.exhangeapp.data.models.Currency
 import kotlinx.collections.immutable.ImmutableList
@@ -43,7 +44,9 @@ fun CurrencyDropDown(
     ExposedDropdownMenuBox(
         expanded = mExpanded,
         onExpandedChange = { mExpanded = !mExpanded },
-        modifier = Modifier.padding(12.dp),
+        modifier = Modifier
+            .padding(12.dp)
+            .testTag("ExposedDropdownMenuBox"),
     ) {
         OutlinedTextField(
             value = currencyValue,
@@ -69,11 +72,13 @@ fun CurrencyDropDown(
                         Icon(
                             imageVector = Icons.Rounded.Close,
                             contentDescription = null,
-                            modifier = Modifier.clickable {
-                                currencyValue = ""
-                                selectedCurrencyValue = ""
-                                onCurrencySelected(null)
-                            }
+                            modifier = Modifier
+                                .clickable {
+                                    currencyValue = ""
+                                    selectedCurrencyValue = ""
+                                    onCurrencySelected(null)
+                                }
+                                .testTag("Close")
                         )
                     }
                 }
@@ -82,6 +87,7 @@ fun CurrencyDropDown(
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth()
+                .testTag("OutlinedTextField")
         )
         val filteringOptions = currencyItems?.filter {
             it.toString().contains(currencyValue, ignoreCase = true)
@@ -92,6 +98,7 @@ fun CurrencyDropDown(
             modifier = Modifier
                 .heightIn(0.dp, 240.dp)
                 .fillMaxWidth()
+                .testTag("ExposedDropdownMenu")
         ) {
             filteringOptions?.map { currency ->
                 DropdownMenuItem(
