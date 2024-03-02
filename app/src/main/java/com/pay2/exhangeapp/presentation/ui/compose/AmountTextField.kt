@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 
+private val MAX_LENGTH = 15
+
 @Composable
 fun AmountTextField(onValueChange: (String) -> Unit, modifier: Modifier) {
     var amountValue by rememberSaveable {
@@ -24,8 +26,10 @@ fun AmountTextField(onValueChange: (String) -> Unit, modifier: Modifier) {
         value = amountValue,
         onValueChange = { value ->
             // Regex that only allows non zero leading digits and one decimal
-            val regex = "^(?!0)(?:0|[1-9][0-9]*)(\\.)?[0-9]*$".toRegex()
-            if (value.length < amountValue.length || value.matches(regex)) {
+            val regex = "^(?!00)(?:0|[1-9][0-9]*)(\\.)?[0-9]*$".toRegex()
+            if (value.length <= MAX_LENGTH &&
+                (value.length < amountValue.length || value.matches(regex))
+            ) {
                 amountValue = value
                 onValueChange(amountValue)
             }
