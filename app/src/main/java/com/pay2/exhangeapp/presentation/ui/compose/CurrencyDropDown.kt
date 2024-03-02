@@ -51,6 +51,9 @@ fun CurrencyDropDown(
         OutlinedTextField(
             value = currencyValue,
             onValueChange = {
+                if (!mExpanded){
+                    mExpanded = true
+                }
                 currencyValue = it
             },
             maxLines = 1,
