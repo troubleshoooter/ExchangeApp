@@ -86,9 +86,9 @@ fun Home(mainViewModel: MainViewModel = viewModel()) {
                 isLoading = currencyState == null,
                 currencyItems = currencyState,
                 onCurrencySelected = { currency ->
+                    val prevCurrency = mainViewModel.getSelectedCurrency()
+                    mainViewModel.setSelectedCurrency(currency)
                     currency?.let {
-                        val prevCurrency = mainViewModel.getSelectedCurrency()
-                        mainViewModel.setSelectedCurrency(currency)
                         if (amountValue.isBlank()) {
                             mainViewModel.clearList()
                         } else if (amountValue.isNotBlank() && prevCurrency != currency) {
