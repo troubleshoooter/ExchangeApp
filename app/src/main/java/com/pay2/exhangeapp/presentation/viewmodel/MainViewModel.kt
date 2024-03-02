@@ -129,13 +129,13 @@ class MainViewModel @Inject constructor(
             list.map { it.copy(code = it.code, rate = it.rate * amount) }
         } else {
             // calculating for other base currency using simple formula based on USD rates
-            // i.e-> INR to GBP rate = amount / (USD to GBP rate) * (USD to INR rate)
+            // i.e-> INR to GBP rate = amount * (USD to GBP rate) / (USD to INR rate)
             val usdToBaseRate =
                 list.findLast { it.code.equals(base, ignoreCase = true) }?.rate ?: 1.0
             list.map {
                 it.copy(
                     code = it.code,
-                    rate = amount / it.rate * usdToBaseRate
+                    rate = amount * (it.rate / usdToBaseRate)
                 )
             }
         }

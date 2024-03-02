@@ -181,7 +181,7 @@ class MainViewModelTest {
         assertEquals(2, exchangeRatesValue!!.size)
         assertEquals(amount, exchangeRatesValue[0].rate, 0.0)
         assertEquals(
-            amount / targetCurrency.rate * baseCurrency.rate,
+            amount * targetCurrency.rate / baseCurrency.rate,
             exchangeRatesValue[1].rate,
             0.0
         )
