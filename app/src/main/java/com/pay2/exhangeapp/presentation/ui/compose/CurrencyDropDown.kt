@@ -61,7 +61,7 @@ fun CurrencyDropDown(
                     CircularProgressIndicator(
                         strokeCap = StrokeCap.Round,
                         strokeWidth = 4.dp,
-                        modifier = Modifier.size(22.dp)
+                        modifier = Modifier.size(22.dp).testTag("CircularProgressIndicator")
                     )
                 } else {
                     if (currencyValue.isBlank()) {

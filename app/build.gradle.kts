@@ -79,6 +79,11 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            merges += "META-INF/LICENSE.md"
+            merges += "META-INF/LICENSE-notice.md"
+        }
+        jniLibs {
+            useLegacyPackaging = true
         }
     }
     kapt {
@@ -106,6 +111,7 @@ dependencies {
     implementation(libs.okhttp.logging)
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
+    androidTestImplementation(libs.mockk.android)
     testImplementation(libs.coroutines.test)
     testImplementation(libs.androidx.test)
     testImplementation(libs.core.test)

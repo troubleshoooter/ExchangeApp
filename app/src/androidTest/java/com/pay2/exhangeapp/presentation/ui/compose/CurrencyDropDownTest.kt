@@ -88,7 +88,7 @@ class CurrencyDropDownTest {
             }
         }
         composeTestRule.onNodeWithText("Select Your Currency").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("OutlinedTextField").performClick()
+        composeTestRule.onNodeWithTag("j").performClick()
         composeTestRule.onNode(hasText(mockCurrency.toString())).performClick()
         composeTestRule.onNodeWithText(mockCurrency.toString()).assertIsDisplayed()
     }
