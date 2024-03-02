@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 
-private val MAX_LENGTH = 15
+private const val MAX_LENGTH = 15
 
 @Composable
 fun AmountTextField(onValueChange: (String) -> Unit, modifier: Modifier) {
