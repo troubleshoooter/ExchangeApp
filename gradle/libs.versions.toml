@@ -1,0 +1,95 @@
+[versions]
+activityCompose = "1.8.2"
+androidCoreTest = '2.2.0'
+androidGradlePlugin = "8.2.1"
+androidx-junit = "1.1.5"
+compileSdk = "34"
+compose = "1.5.1"
+composeBOM = "2024.02.01"
+composeNav = "2.7.7"
+core-test = "1.5.0"
+coroutinesTest = '1.8.0'
+espressoCore = "3.5.1"
+hilt = "2.50"
+junit = "4.13.2"
+kotlin = "1.9.0"
+kotlinxCollection = "0.3.7"
+kotlinxSerializationJson = "1.5.0"
+kover = "0.7.6"
+ktx = "1.12.0"
+lifecycleRuntimeCompose = "2.7.0"
+minSdk = "24"
+mockk = '1.13.10'
+okhttpBOM = "4.12.0"
+paging = "3.2.1"
+retrofit = "2.9.0"
+retrofit-converter = "1.0.0"
+room = "2.6.1"
+targetSdk = "34"
+test-rules = "1.5.0"
+test-runner = "1.5.2"
+
+[libraries]
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-junit" }
+androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
+androidx-test = { group = "androidx.arch.core", name = "core-testing", version.ref = "androidCoreTest" }
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBOM" }
+compose-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+compose-material = { group = "androidx.compose.material3", name = "material3" }
+compose-nav = { group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNav" }
+compose-paging = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
+compose-runtime = { group = "androidx.compose.runtime", name = "runtime-livedata" }
+compose-test-junit = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+compose-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+core-test = { group = "androidx.test", name = "core-ktx", version.ref = "core-test" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+junit = { module = "junit:junit", version.ref = "junit" }
+kotlinx-collection = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxCollection" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
+okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttpBOM" }
+okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor" }
+paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-converter = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofit-converter" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+test-rules = { group = "androidx.test", name = "rules", version.ref = "test-rules" }
+test-runner = { group = "androidx.test", name = "runner", version.ref = "test-runner" }
+
+[plugins]
+android-application = { id = "com.android.application",version.ref = "androidGradlePlugin" }
+kotlin = { id = "org.jetbrains.kotlin.android",version.ref = "kotlin" }
+kapt = { id = "org.jetbrains.kotlin.kapt",version.ref = "kotlin" }
+hilt = { id = "com.google.dagger.hilt.android",version.ref = "hilt" }
+kotlinx-kover = { id = "org.jetbrains.kotlinx.kover",version.ref = "kover" }
+kotlinx-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize",version.ref = "kotlin" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization",version.ref = "kotlin" }
+
+[bundles]
+compose = [
+    "compose-graphics",
+    "compose-material",
+    "compose-nav",
+    "compose-paging",
+    "compose-runtime",
+    "compose-tooling",
+    "compose-ui",
+    "lifecycle-runtime-compose"
+]
+room = [
+    "room-ktx",
+    "room-paging",
+    "room-runtime"
+]
